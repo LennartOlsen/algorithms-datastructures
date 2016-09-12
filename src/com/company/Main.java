@@ -13,5 +13,8 @@ public class Main {
 
         /** Shape Example **/
         com.company.generics.shapes.Demo.Demo();
+
+        /** Functional Example **/
+        com.company.generics.functional.Demo.Demo();
     }
 }

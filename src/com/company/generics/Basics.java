@@ -1,10 +1,6 @@
 package com.company.generics;
 
-import com.company.generics.shapes.Circle;
-import com.company.generics.shapes.IShape;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Comparator;
 
 /**
  * Created by lennartolsen on 12/09/2016.
@@ -28,7 +24,7 @@ public class Basics {
     }
 
     /**
-     * ## EXAMPLE ##
+     * ## EXAMPLE (Figure 1.16) ##
      * This would be used in a collection implementation.
      * Generic method for searching a array of any type
      * @param haystack the array to search in
@@ -46,7 +42,7 @@ public class Basics {
     }
 
     /**
-     * ## EXAMPLE ##
+     * ## EXAMPLE (Figure 1.17) ##
      * This would be used in a collection implementation.
      * Generick type bound method for finding the largest element in any array.
      * ## The <? super T> is an example of using a wildcard in the implementation
@@ -64,6 +60,5 @@ public class Basics {
 
         return haystack[maxIndex];
     }
-
 
 }
