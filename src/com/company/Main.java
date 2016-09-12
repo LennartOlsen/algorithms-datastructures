@@ -10,5 +10,8 @@ public class Main {
 
         /** Generics test **/
         com.company.generics.Basics.Test();
+
+        /** Shape Example **/
+        com.company.generics.shapes.Demo.Demo();
     }
 }
