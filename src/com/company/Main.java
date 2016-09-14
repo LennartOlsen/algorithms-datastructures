@@ -16,5 +16,8 @@ public class Main {
 
         /** Functional Example **/
         com.company.generics.functional.Demo.Demo();
+
+        /** Stack demo **/
+        com.company.list.Demo.Demo();
     }
 }
