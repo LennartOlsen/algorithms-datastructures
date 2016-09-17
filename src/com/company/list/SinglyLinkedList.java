@@ -12,39 +12,20 @@ public class SinglyLinkedList {
         counter = 0;
     }
 
-    public void Add(Object Data){
+    public void add(Object Data){
         //If no head is present we just add one
         if(head == null){
             this.head = new SinglyLinkedListElement(Data);
+            return;
         }
-
-        SinglyLinkedListElement temp = new SinglyLinkedListElement(Data);
-        SinglyLinkedListElement current = head;
-
-        //If current is null then dont handle (needless check)
-        if(current != null){
-            //set current to the very last one we can find
-            while(current.getNext() != null){
-                current = current.getNext();
-            }
-
-            //set the next node to our new one.
-            current.setNext(temp);
-        }
-
-        incrementCounter();
+        add(Data, counter);
     }
 
     //Insert a element at index
-    public void Add(Object Data, int Index){
+    public void add(Object Data, int Index){
         SinglyLinkedListElement temp = new SinglyLinkedListElement(Data);
-        SinglyLinkedListElement current = head;
 
-        if(current != null){
-            for (int i = 0; i < Index && current.getNext() != null; i++) {
-                current = current.getNext();
-            }
-        }
+        SinglyLinkedListElement current = get(Index);
 
         temp.setNext(current.getNext());
 
@@ -53,14 +34,14 @@ public class SinglyLinkedList {
         incrementCounter();
     }
 
-    public Object get(int Index){
+    public SinglyLinkedListElement get(int Index){
         if(isEmpty()){return null;}
         //Index out of bounds
         if(Index < 0 && Index > counter){
             return null;
         }
 
-        SinglyLinkedListElement current = head.getNext();
+        SinglyLinkedListElement current = head;
 
         for (int i = 0; i < Index; i++) {
             //element not there
@@ -70,7 +51,7 @@ public class SinglyLinkedList {
             current = current.getNext();
         }
         //When we have looped "Index" number of times we are at the one we want
-        return current.getData();
+        return current;
     }
 
     public Object remove(int Index){
@@ -81,21 +62,21 @@ public class SinglyLinkedList {
         }
 
         SinglyLinkedListElement current = head;
-        for (int i = 0; i < Index; i++) {
-            if (current.getNext() == null)
-                return false;
+        SinglyLinkedListElement temp = head;
 
-            current = current.getNext();
+        if(Index == 0){
+            this.head = head.getNext();
+        } else {
+            current = get(Index - 1);
+            temp = current.getNext();
         }
-
-        SinglyLinkedListElement temp = current.getNext();
 
         //We need to skip the element that is next.
         current.setNext(current.getNext().getNext());
 
         // decrement the number of elements variable
         decrementCounter();
-        return temp;
+        return temp.getData();
     }
 
     public boolean isEmpty(){
@@ -106,18 +87,35 @@ public class SinglyLinkedList {
         return false;
     }
 
-    public String toString(){
+    public String asString(){
         String output = "";
         if(isEmpty()){return output;}
 
-        SinglyLinkedListElement current = head.getNext();
+        SinglyLinkedListElement current = head;
 
-        while(current.getNext() != null){
+        while(current != null){
             output += "[" + current.getData().toString() + "]";
             current = current.getNext();
         }
         return output;
 
+    }
+
+    public boolean hasElement(Object Data){
+        if(isEmpty()){return false;}
+
+        SinglyLinkedListElement current = head;
+        while(current != null){
+            if(current.getData() == Data){
+                return true;
+            }
+            current = current.getNext();
+        }
+        return false;
+    }
+
+    public int getLength(){
+        return counter;
     }
 
     private void incrementCounter(){
