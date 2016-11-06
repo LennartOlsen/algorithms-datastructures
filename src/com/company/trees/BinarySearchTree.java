@@ -17,6 +17,9 @@ package com.company.trees;
 
 import com.company.trees.UnderflowException;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 /**
  * Implements an unbalanced binary search tree.
  * Note that all "matching" is based on the compareTo method.
@@ -112,6 +115,7 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
 
     /**
      * Internal method to insert into a subtree.
+     *  (Makes for a recursive structure)
      * @param x the item to insert.
      * @param t the node that roots the subtree.
      * @return the new root of the subtree.
@@ -291,6 +295,10 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
         }
     }
 
+    private void visit(BinaryNode<AnyType> t) {
+        System.out.print(t.element + ", ");
+    }
+
 
     /** EXERCISES **/
     public int countNodes() throws UnderflowException{
@@ -320,9 +328,8 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
         //Test dead end
         if (t == null) return c;
 
-        if(t.left != null || t.right != null){
-            c++;
-        }
+        c++;
+
         c = countNodes(t.left, c);
         c = countNodes(t.right, c);
         return c;
@@ -350,5 +357,98 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
         c = countLeaves(t.left, c);
         c = countLeaves(t.right, c);
         return c;
+    }
+
+    /** EXCERCISES - HANDIN **/
+    public void inOrder() throws UnderflowException {
+        if(isEmpty())
+            throw new UnderflowException();
+
+        inOrder(root);
+    }
+
+    public void preOrder() throws UnderflowException {
+        if(isEmpty())
+            throw new UnderflowException();
+
+        preOrder(root);
+    }
+
+    public void postOrder() throws UnderflowException {
+        if(isEmpty())
+            throw new UnderflowException();
+
+        postOrder(root);
+    }
+
+    public void levelOrder() throws UnderflowException {
+        if(isEmpty())
+            throw new UnderflowException();
+
+        levelOrder(root);
+    }
+
+    /**
+     * In-Order always walks left
+     * Prints (visits) left most node first
+     * @param t
+     */
+    private void inOrder(BinaryNode<AnyType> t){
+        if (t == null)
+            return;
+
+        inOrder(t.left);
+        visit(t);
+        inOrder(t.right);
+    }
+
+    /**
+     * Pre-Order starts at root then goes left.
+     * Prints (visits) right away
+     * @param t
+     */
+    private void preOrder(BinaryNode<AnyType> t){
+        if (t == null)
+            return;
+
+        visit(t);
+        preOrder(t.left);
+        preOrder(t.right);
+    }
+
+    /**
+     * Post-Order starts at left leaves.
+     * Prints (visits) leaves first.
+     * @param t
+     */
+    private void postOrder(BinaryNode<AnyType> t){
+        if (t == null)
+            return;
+
+        postOrder(t.left);
+        postOrder(t.right);
+        visit(t);
+    }
+
+    /**
+     * Level-Order walks breadth first (sideways)
+     * Prints root, left node, right node and so on.
+     * On print we add the left and right nodes if present.
+     * @param root
+     */
+    private void levelOrder(BinaryNode root){
+        Queue<BinaryNode> q = new LinkedList<>();
+        q.add(root);
+        BinaryNode t;
+        while (!q.isEmpty()) {
+            t = q.remove();
+            if(t != null) {
+                visit(t);
+            }
+            if (t.left != null)
+                q.add(t.left);
+            if (t.right != null)
+                q.add(t.right);
+        }
     }
 }
