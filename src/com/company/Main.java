@@ -22,7 +22,7 @@ public class Main {
         //com.company.list.Demo.Demo();
 
         /**BST DEMO **/
-        try {
+        /**try {
             com.company.trees.Demo.BSTDemo();
         } catch (UnderflowException e){
             System.out.println("Underflows");
@@ -67,6 +67,8 @@ public class Main {
         System.out.println(qh.print());
         System.out.println(qh.traversals);*/
 
-        com.company.sorting.Demo.Demo();
+        /*com.company.sorting.Demo.Demo();*/
+
+        com.company.graphs.Dijkstra.main( );
     }
 }

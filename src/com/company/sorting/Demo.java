@@ -1,14 +1,34 @@
 package com.company.sorting;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import com.company.ballsbins.Ball;
+import com.company.sorting.array.Booleans;
+import com.company.sorting.models.Point;
+import com.company.sorting.models.Relation;
+import com.sun.org.apache.xpath.internal.operations.Bool;
+
+import java.util.*;
+
+import static com.company.sorting.total.LogTotal.logarithmicTotalExec;
+import static com.company.sorting.total.QuadraticTotal.quadraticTotalExec;
 
 /**
  * Created by lennartolsen on 01/11/2016.
  */
 public class Demo {
+
+    public static void Demo(){
+        Exercise753();
+        Exercise744();
+        ArrayList<Point> points = new ArrayList<Point>();
+        points.add(new Point(1,2,"0"));
+        points.add(new Point(2,3,"1"));
+        points.add(new Point(3,4,"2"));
+        points.add(new Point(4,4,"3"));
+        points.add(new Point(4,5,"4"));
+        points.add(new Point(0,1,"5"));
+        Exercise738(points);
+    }
+
     /**
      * We are given an array that contains N numbers. We want to determine if there are two numbers whose sum equals a given number K.
      * For instance, if the input is 8, 4, 1, 6, and K is 10, then the answer is yes (4 and 6). A number may be used twice. Do the following:
@@ -17,8 +37,7 @@ public class Demo {
      * After that is done, you can solve the problem in linear time.)
      * c. Code both solutions and compare the running times of your algorithms.
      */
-
-    public static void Demo(){
+    public static void Exercise753(){
         List<Integer> integers = new ArrayList<Integer>();
         int k = 10;
 
@@ -31,80 +50,73 @@ public class Demo {
         for (int i = 0; i < length; i++) {
             integers.add(rn.nextInt((max - min) + 1) + min);
         }
-        
-        System.out.println(integers.toString());
+
         quadraticTotalExec(integers, k);
         logarithmicTotalExec(integers, k);
     }
 
-    private static void quadraticTotalExec(List<Integer> input, int k){
-        long startTime = System.nanoTime();
-        if(quadraticTotal(input, k)){System.out.println("Success");}
-        if(quadraticTotal(input, k)){System.out.println("Success");}
-        if(quadraticTotal(input, k)){System.out.println("Success");}
-        long endTime = System.nanoTime();
-        System.out.print("time to execute : ");
-        System.out.print((endTime - startTime) / 1000000);
-        System.out.println(" ms");
+    public static void Exercise744(){
+        ArrayList<Boolean> sortMe = new ArrayList<Boolean>();
+        Random rn = new Random();
+        int length = 10000;
 
-    }
-
-    private static void logarithmicTotalExec(List<Integer> input, int k){
-
-        Collections.sort(input, (Integer a, Integer b) -> a.compareTo(b));
-
-        long startTime = System.nanoTime();
-        if(logarithmicTotal(input, k)){System.out.println("Success");}
-        if(logarithmicTotal(input, k)){System.out.println("Success");}
-        if(logarithmicTotal(input, k)){System.out.println("Success");}
-        long endTime = System.nanoTime();
-        System.out.print("time to execute : ");
-        System.out.print((endTime - startTime) / 1000000);
-        System.out.println(" ms");
-
-    }
-
-    private static boolean quadraticTotal(List<Integer> input, int total){
-        for (int i = 0; i < input.size() - 1; i++) {
-            for (int j = 0; j < input.size() - 1; j++) {
-                if(input.get(i) + input.get(j) == total){
-                    return true;
-                }
+        for (int i = 0; i < length; i++) {
+            if(rn.nextInt() % 2 == 0) {
+                sortMe.add(true);
+            } else {
+                sortMe.add(false);
             }
         }
-        return false;
+
+        Booleans.WalkSortNonConstant(sortMe);
+        Booleans.WalkSortConstant(sortMe);
     }
 
     /**
-     * WALK TOWARDS MIDDLE
-     * @param input
-     * @param total
-     * @return
+     * Write a program that reads N points in a plane and outputs any group of four or more colinear points (i.e., points on the same line).
+     * The obvious brute-force algorithm requires O(N4) time.
+     * However, there is a better algorithm that makes use of sorting and runs in O(N2 log N) time.
+     * This is even better
      */
-    private static boolean logarithmicTotal(List<Integer> input, int total){
+    public static void Exercise738(ArrayList<Point> Points){
+        HashMap<String, ArrayList<String>> pointMap = new HashMap<>();
 
-        int y = input.size() - 1;
-        int x = 0;
+        for (int i = 0; i < Points.size(); i++){
+            Point currentPoint = Points.get(i);
+            for (int j = i; j < Points.size(); j++){
+                if(j != i) {
+                    float slope = CalculateSlope(currentPoint, Points.get(j));
+                    Relation r = new Relation(currentPoint, Points.get(j), slope, YIntercept(currentPoint, slope));
 
-        while(true){
-            Integer xVal = input.get(x);
-            Integer yVal = input.get(y);
-            if(xVal + yVal == total){
-                //System.out.println("YAY");
-                return true;
-            }
-            if(xVal + yVal < total){
-                //System.out.println("I WAS LESS");
-                x++;
-            }
-            if(xVal + yVal > total){
-                //System.out.println("I WAS MORE");
-                y--;
-            }
-            if(y == x){
-                //System.out.println("You done goofed");
-                return false;
+                    ArrayList<String> ps = new ArrayList<>();
+                    if(pointMap.get(r.getRelationId()) != null){
+                        ps = pointMap.get(r.getRelationId());
+                    }
+                    ps.add("[" + currentPoint.toString() + "," + Points.get(j).toString() + "]" );
+                    pointMap.put(r.getRelationId(), ps);
+
+                    if(ps.size() == 4){
+                        System.out.println(ps.toString());
+                        System.out.println("Success");
+                        return;
+                    }
+                }
             }
         }
+        System.out.println("no success");
+    }
+
+    /**
+     *  a=(y2−y1)/(x2−x1)
+     * @param Current y1,x1
+     * @param Next y2,x2
+     * @return
+     */
+    private static float CalculateSlope(Point Current, Point Next){
+        return (float) (Current.getY() - Next.getY()) / (Current.getX() - Next.getX());
+    }
+
+    private static float YIntercept(Point Current, float slope){
+        return (float) (Current.getY()) - (slope * Current.getX());
     }
 }
